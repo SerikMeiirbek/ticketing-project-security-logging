@@ -1,115 +1,67 @@
 package com.cydeo.controller;
 
 import com.cydeo.dto.ProjectDTO;
-import com.cydeo.dto.UserDTO;
+import com.cydeo.entity.ResponseWrapper;
 import com.cydeo.service.ProjectService;
-import com.cydeo.service.UserService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
-@Controller
-@RequestMapping("/project")
+@RestController
+@RequestMapping("/api/v1/project")
 public class ProjectController {
-
     private final ProjectService projectService;
-    private final UserService userService;
 
-    public ProjectController(ProjectService projectService, UserService userService) {
+    public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
-        this.userService = userService;
     }
 
-    @GetMapping("/create")
-    public String createProject(Model model) {
-
-        model.addAttribute("project", new ProjectDTO());
-        model.addAttribute("projects", projectService.listAllProjectDetails());
-        model.addAttribute("managers", userService.listAllByRole("manager"));
-
-        return "/project/create";
-
+    @RolesAllowed({"Admin", "Manager"})
+    @GetMapping
+    public ResponseEntity<ResponseWrapper> getProjects() {
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper("Projects are successfully retrieved", projectService.listAllProjects(), HttpStatus.OK));
     }
 
-    @PostMapping("/create")
-    public String insertProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
-
-        if (bindingResult.hasErrors()) {
-
-            model.addAttribute("projects", projectService.listAllProjectDetails());
-            model.addAttribute("managers", userService.listAllByRole("manager"));
-
-            return "/project/create";
-
-        }
-
-        projectService.save(project);
-        return "redirect:/project/create";
-
+    @RolesAllowed({"Manager"})
+    @GetMapping("/{projectCode}")
+    public ResponseEntity<ResponseWrapper> getProjectByCode(@PathVariable("projectCode") String projectCode) {
+        return ResponseEntity.ok(new ResponseWrapper("Project is successfully retrieved", projectService.getByProjectCode(projectCode), HttpStatus.OK));
     }
 
-
-    @GetMapping("/delete/{projectcode}")
-    public String deleteProject(@PathVariable("projectcode") String projectcode) {
-        projectService.delete(projectcode);
-        return "redirect:/project/create";
+    @RolesAllowed({"Manager"})
+    @PostMapping()
+    public ResponseEntity<ResponseWrapper> createProject(@RequestBody ProjectDTO ProjectDTO) {
+        projectService.save(ProjectDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("Project is successfully created", HttpStatus.CREATED));
     }
 
-    @GetMapping("/complete/{projectcode}")
-    public String completeProject(@PathVariable("projectcode") String projectcode) {
-        projectService.complete(projectcode);
-        return "redirect:/project/create";
-    }
+//    @RolesAllowed({"Manager"})
+//    @PostMapping
+//    public ResponseEntity<ResponseWrapper>  updateProject(@RequestBody ProjectDTO project) {
+//        projectService.update(project);
+//        return ResponseEntity.ok(new ResponseWrapper("Project is successfully updated",project,  HttpStatus.OK));
+//    }
+//    @RolesAllowed({"Manager"})
+//    @GetMapping("/{projectCode}")
+//    public ResponseEntity<ResponseWrapper> deleteProject(@PathVariable("projectCode") String projectcode) {
+//        projectService.delete(projectcode);
+//        return ResponseEntity.ok(new ResponseWrapper("Project is successfully deleted", HttpStatus.OK));
+//    }
 
-
-
-    @GetMapping("/update/{projectcode}")
-    public String editProject(@PathVariable("projectcode") String projectcode, Model model) {
-
-        model.addAttribute("project", projectService.getByProjectCode(projectcode));
-        model.addAttribute("projects", projectService.listAllProjectDetails());
-        model.addAttribute("managers", userService.listAllByRole("manager"));
-
-        return "/project/update";
-
-    }
-
-    @PostMapping("/update")
-    public String updateProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model) {
-
-        if (bindingResult.hasErrors()) {
-
-            model.addAttribute("projects", projectService.listAllProjectDetails());
-            model.addAttribute("managers", userService.listAllByRole("manager"));
-
-            return "/project/update";
-
-        }
-
-        projectService.update(project);
-        return "redirect:/project/create";
-
-    }
-
-
+    @RolesAllowed({"Manager"})
     @GetMapping("/manager/project-status")
-    public String getProjectByManager(Model model) {
-
-       List<ProjectDTO> projects = projectService.listAllProjectDetails();
-
-        model.addAttribute("projects", projects);
-
-        return "/manager/project-status";
+    public ResponseEntity<ResponseWrapper>  getProjectByManager() {
+        List<ProjectDTO> projects = projectService.listAllProjectDetails();
+        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved", projects, HttpStatus.OK));
     }
 
-    @GetMapping("/manager/complete/{projectCode}")
-    public String managerCompleteProject(@PathVariable("projectCode") String projectCode) {
+    @RolesAllowed({"Manager"})
+    @PutMapping("/manager/complete/{projectCode}")
+    public ResponseEntity<ResponseWrapper>  managerCompleteProject(@PathVariable("projectCode") String projectCode) {
         projectService.complete(projectCode);
-        return "redirect:/project/manager/project-status";
+        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully completed", HttpStatus.OK));
     }
-
 }

@@ -8,12 +8,10 @@ import com.cydeo.enums.Status;
 import com.cydeo.mapper.ProjectMapper;
 import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.ProjectRepository;
-import com.cydeo.repository.TaskRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,7 +56,6 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectMapper.convertToEntity(dto);
         projectRepository.save(project);
 
-
     }
 
     @Override
@@ -70,9 +67,6 @@ public class ProjectServiceImpl implements ProjectService {
         convertedProject.setProjectStatus(project.getProjectStatus());
 
         projectRepository.save(convertedProject);
-
-
-
     }
 
     @Override
@@ -102,9 +96,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDTO> listAllProjectDetails() {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        UserDTO currentUserDTO = userService.findByUserName(username);
+        UserDTO currentUserDTO = userService.findByUserName("harold@manager.com");
 
         User user = userMapper.convertToEntity(currentUserDTO);
 
