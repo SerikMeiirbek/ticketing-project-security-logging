@@ -7,6 +7,7 @@ import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.UserRepository;
+import com.cydeo.service.KeycloakService;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
@@ -24,13 +25,15 @@ public class UserServiceImpl implements UserService {
     private final ProjectService projectService;
     private final TaskService taskService;
 //    private final PasswordEncoder passwordEncoder;
+    private final KeycloakService keycloakService;
 
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ProjectService projectService, TaskService taskService) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ProjectService projectService, TaskService taskService, KeycloakService keycloakService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.projectService = projectService;
         this.taskService = taskService;
+        this.keycloakService = keycloakService;
     }
 
     @Override
@@ -57,6 +60,7 @@ public class UserServiceImpl implements UserService {
 //        obj.setPassWord(passwordEncoder.encode(obj.getPassWord()));
 
         userRepository.save(obj);
+        keycloakService.userCreate(dto);
 
 
     }

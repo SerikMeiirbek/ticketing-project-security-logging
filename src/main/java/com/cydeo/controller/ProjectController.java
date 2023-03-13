@@ -38,18 +38,18 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("Project is successfully created", HttpStatus.CREATED));
     }
 
-//    @RolesAllowed({"Manager"})
-//    @PostMapping
-//    public ResponseEntity<ResponseWrapper>  updateProject(@RequestBody ProjectDTO project) {
-//        projectService.update(project);
-//        return ResponseEntity.ok(new ResponseWrapper("Project is successfully updated",project,  HttpStatus.OK));
-//    }
-//    @RolesAllowed({"Manager"})
-//    @GetMapping("/{projectCode}")
-//    public ResponseEntity<ResponseWrapper> deleteProject(@PathVariable("projectCode") String projectcode) {
-//        projectService.delete(projectcode);
-//        return ResponseEntity.ok(new ResponseWrapper("Project is successfully deleted", HttpStatus.OK));
-//    }
+    @RolesAllowed({"Manager"})
+    @PutMapping()
+    public ResponseEntity<ResponseWrapper>  updateProject(@RequestBody ProjectDTO project) {
+        projectService.update(project);
+        return ResponseEntity.ok(new ResponseWrapper("Project is successfully updated",project,  HttpStatus.OK));
+    }
+    @RolesAllowed({"Manager"})
+    @DeleteMapping("/{projectCode}")
+    public ResponseEntity<ResponseWrapper> deleteProject(@PathVariable("projectCode") String projectCode) {
+        projectService.delete(projectCode);
+        return ResponseEntity.ok(new ResponseWrapper("Project is successfully deleted", HttpStatus.OK));
+    }
 
     @RolesAllowed({"Manager"})
     @GetMapping("/manager/project-status")

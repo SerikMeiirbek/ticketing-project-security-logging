@@ -9,11 +9,8 @@ import lombok.*;
 import javax.validation.constraints.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private Long id;
