@@ -12,7 +12,7 @@
 	<artifactId>ticketing-project-security</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ticketing-project-orm</name>
-	<description>ticketing-project-orm</description>
+	<description>ticketing-project-security</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
