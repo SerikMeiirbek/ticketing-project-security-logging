@@ -1,6 +1,7 @@
 package com.cydeo.controller;
 
 import com.cydeo.annotation.DefaultExceptionMessage;
+import com.cydeo.annotation.ExecutionTimeLoggable;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.ResponseWrapper;
 import com.cydeo.exception.TicketingProjectException;
@@ -24,6 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ExecutionTimeLoggable
     @RolesAllowed("Admin")
     @GetMapping
     @Operation(summary = "Get Users")
@@ -32,6 +34,7 @@ public class UserController {
         return ResponseEntity.ok(new ResponseWrapper("Users are successfully retrieved", userDTOList, HttpStatus.OK));
     }
 
+    @ExecutionTimeLoggable
     @RolesAllowed("Admin")
     @GetMapping("/{userName}")
     @Operation(summary = "Get Users by username")
