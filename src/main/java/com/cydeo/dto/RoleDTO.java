@@ -5,6 +5,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 public class RoleDTO {
 
     private Long id;

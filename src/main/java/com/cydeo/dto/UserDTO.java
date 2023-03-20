@@ -11,6 +11,8 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class UserDTO {
 
     private Long id;

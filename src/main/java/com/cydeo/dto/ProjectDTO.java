@@ -13,6 +13,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class ProjectDTO {
 
     private Long id;
